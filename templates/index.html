@@ -1,0 +1,17 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Giriş Yap</h1>
+    <div class="buttons">
+        <a href="{{ url_for('admin_login') }}"><button class="admin">Yönetici Girişi</button></a>
+        <a href="{{ url_for('user_login') }}"><button class="user">Kullanıcı Girişi</button></a>
+    </div>
+</body>
+</html>

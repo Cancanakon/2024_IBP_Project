@@ -1,0 +1,25 @@
+<!-- user_panel.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Paneli</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Kullanıcı Paneli</h1>
+    <h2>Duyurular</h2>
+    <ul>
+        {% for duyuru in duyurular %}
+            <li>{{ duyuru.content }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Mesajlar</h2>
+    <ul>
+        {% for mesaj in mesajlar %}
+            <li>{{ mesaj.content }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

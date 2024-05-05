@@ -1,0 +1,18 @@
+<!-- users_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>User List</h1>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.username }} - {{ user.role }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

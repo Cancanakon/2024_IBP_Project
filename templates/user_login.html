@@ -1,0 +1,28 @@
+<!-- user_login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Girişi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Kullanıcı Girişi</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label for="username">Kullanıcı Adı:</label><br>
+        {{ form.username(class="form-control") }}<br>
+        <label for="password">Şifre:</label><br>
+        {{ form.password(class="form-control") }}<br><br>
+        <input type="submit" value="Giriş Yap">
+    </form>
+</body>
+</html>
