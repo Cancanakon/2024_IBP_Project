@@ -1,15 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SelectField
+from wtforms import StringField, PasswordField, SelectField, TextAreaField
 from wtforms.validators import InputRequired, Length
 import os
-from wtforms import TextAreaField
 import secrets
-from datetime import datetime
-from flask import jsonify
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -30,8 +27,6 @@ class User(db.Model):
     announcements = db.relationship('Announcement', backref='author', lazy=True)
     messages_sent = db.relationship('Message', backref='sender', lazy=True, foreign_keys='Message.sender_id')
     messages_received = db.relationship('Message', backref='receiver', lazy=True, foreign_keys='Message.receiver_id')
-    announcements = db.relationship('Announcement', backref='author', lazy=True)
-
 
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +43,6 @@ class Message(db.Model):
     read = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Yeni sütun
 
-
 # Form Classes
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
@@ -57,29 +51,6 @@ class LoginForm(FlaskForm):
 class AnnouncementForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(min=1, max=100)])
     content = TextAreaField('Announcement', validators=[InputRequired(), Length(min=1, max=200)])
-
-@app.route('/api/user_registration_data')
-def user_registration_data():
-    # Başlangıç ve bitiş tarihlerini belirle
-    end_date = datetime.utcnow()
-    start_date = end_date - timedelta(hours=1)  # Son 1 saatlik zaman dilimini baz al
-
-    # Her dakika için kayıtlı kullanıcı sayısını hesapla
-    data = []
-    current_date = start_date
-    while current_date <= end_date:
-        next_date = current_date + timedelta(minutes=1)
-        count = User.query.filter(User.created_at.between(current_date, next_date)).count()
-        # Tarih dizesini datetime nesnesine dönüştür
-        current_date_str = current_date.strftime('%Y-%m-%d %H:%M:%S')
-        data.append((current_date_str, count))
-        current_date = next_date
-
-    # Verileri JSON formatına dönüştür ve istemciye gönder
-    dates = [date for date, count in data]
-    counts = [count for date, count in data]
-
-    return jsonify({"dates": dates, "counts": counts})
 
 class UserAddForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
@@ -91,12 +62,10 @@ class SendMessageForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     content = TextAreaField('Message', validators=[InputRequired(), Length(min=1, max=200)])
 
-
 # Create the database
 with app.app_context():
     db.create_all()
 
-# Home Page
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -123,8 +92,7 @@ def admin_panel():
     announcements = Announcement.query.all()
     users = User.query.filter_by(role='user').all()
     messages = Message.query.all()
-    return render_template('admin_panel.html', admin_user=admin_user, announcements=announcements, users=users,
-                           messages=messages,current_user=admin_user)
+    return render_template('admin_panel.html', admin_user=admin_user, announcements=announcements, users=users, messages=messages, current_user=admin_user)
 
 @app.route('/admin/add_user', methods=['GET', 'POST'])
 def add_user():
@@ -149,7 +117,53 @@ def save_picture(form_picture):
     form_picture.save(picture_path)
     return picture_fn
 
-# User login page and panel
+@app.route('/admin/users')
+def users_list():
+    if 'user_id' not in session:
+        return redirect(url_for('admin_login'))
+
+    admin_user = User.query.get(session['user_id'])
+    users = User.query.all()
+    return render_template('users_list.html', admin_user=admin_user, users=users)
+
+@app.route('/user/update/<int:user_id>', methods=['GET', 'POST'])
+def update_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        user.username = request.form['username']
+        user.role = request.form['role']
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('users_list'))
+    return render_template('update_user.html', user=user)
+
+@app.route('/user/delete/<int:user_id>')
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('users_list'))
+
+@app.route('/api/user_registration_data')
+def user_registration_data():
+    end_date = datetime.utcnow()
+    start_date = end_date - timedelta(hours=1)  # Son 1 saatlik zaman dilimini baz al
+
+    data = []
+    current_date = start_date
+    while current_date <= end_date:
+        next_date = current_date + timedelta(minutes=1)
+        count = User.query.filter(User.created_at.between(current_date, next_date)).count()
+        current_date_str = current_date.strftime('%Y-%m-%d %H:%M:%S')
+        data.append((current_date_str, count))
+        current_date = next_date
+
+    dates = [date for date, count in data]
+    counts = [count for date, count in data]
+
+    return jsonify({"dates": dates, "counts": counts})
+
 @app.route('/user/login', methods=['GET', 'POST'])
 def user_login():
     form = LoginForm()
@@ -171,34 +185,6 @@ def user_panel():
     announcements = Announcement.query.all()
     messages = Message.query.filter_by(receiver_id=current_user.id).all()
     return render_template('user_panel.html', current_user=current_user, announcements=announcements, messages=messages)
-
-
-@app.route('/admin/users')
-def users_list():
-    if 'user_id' not in session:
-        return redirect(url_for('admin_login'))
-
-    admin_user = User.query.get(session['user_id'])
-    users = User.query.all()
-    return render_template('users_list.html', admin_user=admin_user, users=users)
-
-@app.route('/user/update/<int:user_id>', methods=['GET', 'POST'])
-def update_user(user_id):
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return redirect(url_for('index'))
-    if request.method == 'POST':
-        user['username'] = request.form['username']
-        user['role'] = request.form['role']
-        # Profil resmi güncellenebilir
-        return redirect(url_for('index'))
-    return render_template('update_user.html', user=user)
-
-@app.route('/user/delete/<int:user_id>')
-def delete_user(user_id):
-    global users
-    users = [u for u in users if u['id'] != user_id]
-    return redirect(url_for('index'))
 
 @app.route('/api/user_role_stats')
 def user_role_stats():
@@ -223,7 +209,6 @@ def send_message():
         return redirect(url_for('user_panel'))
     return render_template('send_message.html', form=form)
 
-
 @app.route('/admin/messages')
 def admin_messages():
     if 'user_id' not in session:
@@ -239,7 +224,7 @@ def read_message(message_id):
     message.read = True
     db.session.commit()
     flash('Message marked as read!', 'success')
-    return message_detail(message_id)
+    return redirect(url_for('message_detail', message_id=message_id))
 
 @app.route('/admin/messages/<int:message_id>')
 def message_detail(message_id):
@@ -249,7 +234,7 @@ def message_detail(message_id):
     admin_user = User.query.get(session['user_id'])
     message = Message.query.get_or_404(message_id)
     return render_template('message_detail.html', admin_user=admin_user, message=message)
-# Flask route to render reply message form
+
 @app.route('/admin/messages/<int:message_id>/reply', methods=['GET', 'POST'])
 def reply_message(message_id):
     if 'user_id' not in session:
@@ -270,12 +255,7 @@ def reply_message(message_id):
 
     return render_template('reply_message.html', admin_user=admin_user, original_message=original_message, form=form)
 
-# Flask route to redirect to reply message form
-@app.route('/admin/messages/<int:message_id>/reply', methods=['GET'])
-def redirect_reply_message(message_id):
-    return redirect(url_for('reply_message', message_id=message_id))
 @app.route('/announcement_list')
-
 def announcement_list():
     if 'user_id' not in session:
         return redirect(url_for('user_login'))
@@ -294,11 +274,11 @@ def add_announcement():
         flash('Duyuru başarıyla eklendi!', 'success')
         return redirect(url_for('admin_panel'))
     return render_template('add_announcement.html', form=form)
+
 @app.route('/logout', methods=['POST'])
 def logout():
-    # Oturumu sonlandır
     session.clear()
-    # Ana sayfaya yönlendir
     return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
