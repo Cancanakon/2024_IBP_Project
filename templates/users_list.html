@@ -1,18 +1,37 @@
-<!-- users_list.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Kullanıcı Listesi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='users_list.css') }}">
 </head>
 <body>
-    <h1>User List</h1>
-    <ul>
-        {% for user in users %}
-            <li>{{ user.username }} - {{ user.role }}</li>
-        {% endfor %}
-    </ul>
+    <h1>Kullanıcı Listesi</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Kullanıcı Adı</th>
+                <th>Rol</th>
+                <th>Profil Resmi</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td><img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}" alt="Profile Picture" width="50" height="50"></td>
+                <td>
+                    <button onclick="location.href='/user/update/{{ user.id }}'" class="btn update-btn">Güncelle</button>
+                    <button onclick="if(confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) { location.href='/user/delete/{{ user.id }}' }" class="btn delete-btn">Sil</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

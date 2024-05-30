@@ -1,25 +1,106 @@
-<!-- user_panel.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kullanıcı Paneli</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_panel.css') }}">
 </head>
 <body>
-    <h1>Kullanıcı Paneli</h1>
-    <h2>Duyurular</h2>
-    <ul>
-        {% for duyuru in duyurular %}
-            <li>{{ duyuru.content }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Mesajlar</h2>
-    <ul>
-        {% for mesaj in mesajlar %}
-            <li>{{ mesaj.content }}</li>
-        {% endfor %}
-    </ul>
+    <div class="header">
+        <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture" class="profile-pic">
+        <h1>{{ current_user.username }} ({{ current_user.role }})</h1>
+        <div class="dropdown">
+            <button class="dropdown-button">Menü</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="showSection('announcement-section')">Duyurular</a>
+                <a href="#" onclick="showSection('message-section')">Mesajlar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Slider Image 1">
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Slider Image 2">
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Slider Image 3">
+                </div>
+                <!-- Diğer resimleri eklemek için aynı yapıyı kullanabilirsiniz -->
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+
+        <div id="announcement-section" class="section">
+            <h2>Duyurular</h2>
+            <ul>
+                <li>
+                    <h3>Duyuru 1</h3>
+                    <p>İçerik 1</p>
+                </li>
+                <li>
+                    <h3>Duyuru 2</h3>
+                    <p>İçerik 2</p>
+                </li>
+                <!-- Diğer duyurular için benzer yapıyı kullanabilirsiniz -->
+            </ul>
+        </div>
+
+        <div id="message-section" class="section">
+            <h2>Mesajlar</h2>
+            <ul>
+                <li>
+                    <h3>Mesaj 1</h3>
+                    <p>Mesaj içeriği 1</p>
+                    <p><small>2023-05-31 10:00:00</small></p>
+                </li>
+                <li>
+                    <h3>Mesaj 2</h3>
+                    <p>Mesaj içeriği 2</p>
+                    <p><small>2023-05-31 12:00:00</small></p>
+                </li>
+                <!-- Diğer mesajlar için benzer yapıyı kullanabilirsiniz -->
+            </ul>
+        </div>
+
+        <a href="/user/send_message?receiver_id=ADMIN_USER_ID_HERE" class="button">Admin'e Mesaj Gönder</a>
+        <form action="/logout" method="post">
+            <button type="submit" class="logout-button">Çıkış Yap</button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper('.mySwiper', {
+            loop: true,
+             autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            }
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
 </body>
 </html>

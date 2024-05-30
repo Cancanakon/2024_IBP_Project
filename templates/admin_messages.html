@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Messages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_messages.css') }}">
+
+</head>
+<body>
+    <h1>Admin Messages</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Content</th>
+                <th>Read</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in all_messages %}
+                <tr>
+                    <td>{{ message.sender.username }}</td>
+                    <td>{{ message.receiver.username }}</td>
+                    <td>{{ message.content }}</td>
+                    <td>{{ "Yes" if message.read else "No" }}</td>
+                    <td>
+
+                            <a href="{{ url_for('read_message', message_id=message.id) }}">Mark as Read</a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcement List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='announcement_list_style.css') }}">
+</head>
+<body>
+    <h1>Announcement List</h1>
+    <ul>
+        {% for announcement in announcements %}
+            <li>
+                <h3>{{ announcement.title }}</h3>
+                <p>{{ announcement.content }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

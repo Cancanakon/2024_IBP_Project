@@ -1,31 +1,144 @@
-<!-- admin_panel.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_panel_style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 </head>
 <body>
-    <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture" width="100" height="100">
-    <h1>Welcome, {{ admin_user.username }} ({{ admin_user.role }})</h1>
+    <nav class="menu">
+        <ul>
+            <li class="profile-info">
+                <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture" class="profile-picture">
+                <h1>{{ admin_user.username }} ({{ admin_user.role }})</h1>
+            </li>
+            <li data-dropdown>
+                <a>Kullanıcılar</a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="{{ url_for('add_user') }}">Kullanıcı Ekle</a></li>
+                        <li><a href="{{ url_for('users_list') }}">Kullanıcı Listesi</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li><a href="{{ url_for('admin_messages') }}">Mesajlar</a></li>
+            <li data-dropdown>
+                <a>Duyurular</a>
+                <div class="dropdown">
+                    <ul>
+                        <li><a href="{{ url_for('add_announcement') }}">Duyuru Ekle</a></li>
+                        <li><a href="{{ url_for('announcement_list') }}">Duyuru Listesi</a></li>
+                    </ul>
+                </div>
+            </li>
+             <form action="{{ url_for('logout') }}" method="post">
+        <button type="submit" class="logout-button">Çıkış Yap</button>
+    </form>
+        </ul>
+    </nav>
+       <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Slider Image 1">
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Slider Image 2">
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Slider Image 3">
+                </div>
+                <!-- Diğer resimleri eklemek için aynı yapıyı kullanabilirsiniz -->
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    <div class="container">
+        <h2>Kullanıcı Kayıt İstatistikleri</h2>
+        <canvas id="rolePieChart"></canvas>
+    </div>
 
-    <h1>Admin Panel</h1>
-    <a href="{{ url_for('add_user') }}"><button class="admin">Add User</button></a>
-    <h2>Announcements</h2>
-    <ul>
-      <a href="{{ url_for('users_list') }}"><button class="admin">Users</button></a>
-    </ul>
-
-    <h2>User Profile</h2>
 
 
-    <h2>Messages</h2>
-    <ul>
-        {% for message in messages %}
-            <li>{{ message.content }}</li>
-        {% endfor %}
-    </ul>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        fetch('/api/user_role_stats')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('rolePieChart').getContext('2d');
+                const rolePieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.roles, // Rol isimleri
+                        datasets: [{
+                            label: 'Kullanıcı Rolleri',
+                            data: data.counts, // Her bir rol için kullanıcı sayıları
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Kullanıcı Rolleri Dağılımı'
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                const ctx = document.getElementById('rolePieChart').getContext('2d');
+                ctx.font = '16px Arial';
+                ctx.fillText('Veri alınırken bir hata oluştu.', 10, 50);
+                console.error('Kullanıcı rol istatistikleri alınırken hata oluştu:', error);
+            });
+
+          var swiper = new Swiper('.mySwiper', {
+            loop: true,
+             autoplay: {
+                delay: 2000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
 </body>
 </html>

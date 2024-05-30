@@ -1,0 +1,21 @@
+<!-- message_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='message_detail.css') }}">
+
+</head>
+<body>
+    <h1>Message Detail</h1>
+    <p>Title: {{ message.title }}</p>
+    <p>Content: {{ message.content }}</p>
+    <p>Sender: {{ message.sender.username }}</p>
+    <p>Receiver: {{ message.receiver.username }}</p>
+    <p>Read: {% if message.read %} Yes {% else %} No {% endif %}</p>
+    <p>Timestamp: {{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <a href="{{ url_for('reply_message', message_id=message.id) }}">Reply</a>
+</body>
+</html>

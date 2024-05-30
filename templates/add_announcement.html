@@ -1,0 +1,32 @@
+<!-- add_announcement.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Announcement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_announcement.css') }}">
+
+</head>
+<body>
+    <h1>Add Announcement</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.title.label }}<br>
+            {{ form.title(size=50) }}<br>
+            {% for error in form.title.errors %}
+                <span class="error">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.content.label }}<br>
+            {{ form.content(size=50) }}<br>
+            {% for error in form.content.errors %}
+                <span class="error">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <button type="submit">Add Announcement</button>
+    </form>
+</body>
+</html>

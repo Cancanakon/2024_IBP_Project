@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Güncelle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='update_user.css') }}">
+</head>
+<body>
+    <h1>Kullanıcı Güncelle</h1>
+    <form action="" method="post">
+        <label for="username">Kullanıcı Adı:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+        <label for="role">Rol:</label>
+        <input type="text" id="role" name="role" value="{{ user.role }}" required>
+        <button type="submit" class="btn update-btn">Güncelle</button>
+    </form>
+</body>
+</html>
