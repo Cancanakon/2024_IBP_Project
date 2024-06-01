@@ -1,0 +1,89 @@
+/* update_announcement_style.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, #2980b9, #8e44ad);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.update-btn,
+.delete-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+}
+
+.update-btn {
+    background: #007bff;
+}
+
+.delete-btn {
+    background: #dc3545;
+}
+
+.update-btn i,
+.delete-btn i {
+    margin-right: 5px;
+}
+
+.update-btn:hover {
+    background: #0056b3;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}

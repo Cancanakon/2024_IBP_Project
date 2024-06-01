@@ -5,35 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Messages</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin_messages.css') }}">
-
 </head>
 <body>
-    <h1>Admin Messages</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Sender</th>
-                <th>Receiver</th>
-                <th>Content</th>
-                <th>Read</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for message in all_messages %}
+    <div class="container">
+        <h1>Admin Messages</h1>
+        <input type="text" id="searchInput" placeholder="Search by receiver name..." onkeyup="filterMessages()">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ message.sender.username }}</td>
-                    <td>{{ message.receiver.username }}</td>
-                    <td>{{ message.content }}</td>
-                    <td>{{ "Yes" if message.read else "No" }}</td>
-                    <td>
-
-                            <a href="{{ url_for('read_message', message_id=message.id) }}">Mark as Read</a>
-
-                    </td>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Content</th>
+                    <th>Read</th>
+                    <th>Action</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody id="messageTableBody">
+                {% for message in all_messages %}
+                    <tr>
+                        <td>{{ message.sender.username }}</td>
+                        <td>{{ message.receiver.username }}</td>
+                        <td>{{ message.content }}</td>
+                        <td>{{ "Yes" if message.read else "No" }}</td>
+                        <td>
+                            <a href="{{ url_for('read_message', message_id=message.id) }}">Mark as Read</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script >
+    function filterMessages() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const messageTableBody = document.getElementById('messageTableBody');
+    const rows = messageTableBody.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const receiverCell = rows[i].getElementsByTagName('td')[1];
+        if (receiverCell) {
+            const receiverName = receiverCell.textContent || receiverCell.innerText;
+            if (receiverName.toLowerCase().indexOf(searchInput) > -1) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    }
+}
+
+    </script>
 </body>
 </html>

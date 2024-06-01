@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Announcement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='update_announcement_style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Update Announcement</h1>
+        <form action="{{ url_for('update_announcement', announcement_id=announcement.id) }}" method="post">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" value="{{ announcement.title }}" required>
+
+            <label for="content">Content</label>
+            <textarea id="content" name="content" rows="10" required>{{ announcement.content }}</textarea>
+
+            <div class="buttons">
+                <button type="submit" class="update-btn"><i class="fas fa-save"></i> Update</button>
+                <button type="button" class="delete-btn" onclick="confirmDeletion({{ announcement.id }})"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function confirmDeletion(id) {
+            if (confirm('Are you sure you want to delete this announcement?')) {
+                window.location.href = '{{ url_for("delete_announcement", announcement_id=0) }}'.replace('0', id);
+            }
+        }
+    </script>
+</body>
+</html>

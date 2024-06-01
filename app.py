@@ -126,16 +126,7 @@ def users_list():
     users = User.query.all()
     return render_template('users_list.html', admin_user=admin_user, users=users)
 
-@app.route('/user/update/<int:user_id>', methods=['GET', 'POST'])
-def update_user(user_id):
-    user = User.query.get_or_404(user_id)
-    if request.method == 'POST':
-        user.username = request.form['username']
-        user.role = request.form['role']
-        db.session.commit()
-        flash('User updated successfully!', 'success')
-        return redirect(url_for('users_list'))
-    return render_template('update_user.html', user=user)
+
 
 @app.route('/user/delete/<int:user_id>')
 def delete_user(user_id):
@@ -263,6 +254,39 @@ def announcement_list():
     current_user = User.query.get(session['user_id'])
     announcements = Announcement.query.all()
     return render_template('announcement_list.html', current_user=current_user, announcements=announcements)
+
+
+@app.route('/user/update/<int:user_id>', methods=['GET', 'POST'])
+def update_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        user.username = request.form['username']
+        user.role = request.form['role']
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('users_list'))
+    return render_template('update_user.html', user=user)
+
+@app.route('/update_announcement/<int:announcement_id>', methods=['GET', 'POST'])
+def update_announcement(announcement_id):
+    announcement = Announcement.query.get_or_404(announcement_id)
+    if request.method == 'POST':
+        announcement.title = request.form['title']
+        announcement.content = request.form['content']
+        db.session.commit()
+        flash('Announcement updated successfully!', 'success')
+        return redirect(url_for('announcement_list'))
+    return render_template('update_announcement.html', announcement=announcement)
+
+
+@app.route('/delete_announcement/<int:announcement_id>')
+def delete_announcement(announcement_id):
+    announcement = Announcement.query.get_or_404(announcement_id)
+    db.session.delete(announcement)
+    db.session.commit()
+    flash('Announcement deleted successfully!', 'success')
+    return redirect(url_for('announcement_list'))
+
 
 @app.route('/admin/add_announcement', methods=['GET', 'POST'])
 def add_announcement():

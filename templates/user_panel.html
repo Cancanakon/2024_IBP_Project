@@ -35,6 +35,9 @@
                 <div class="swiper-slide">
                     <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Slider Image 3">
                 </div>
+                <div class="swiper-slide">
+                    <img src="{{ url_for('static', filename='images/image4.jpg') }}" alt="Slider Image 3">
+                </div>
             </div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-next"></div>
@@ -44,35 +47,30 @@
         <div id="announcement-section" class="section">
             <h2>Duyurular</h2>
             <ul>
+                {% for announcement in announcements %}
                 <li>
-                    <h3>Duyuru 1</h3>
-                    <p>İçerik 1</p>
+                    <h3>{{ announcement.title }}</h3>
+                    <p>{{ announcement.content }}</p>
                 </li>
-                <li>
-                    <h3>Duyuru 2</h3>
-                    <p>İçerik 2</p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
 
         <div id="message-section" class="section">
             <h2>Mesajlar</h2>
             <ul>
+                {% for message in messages %}
                 <li>
-                    <h3>Mesaj 1</h3>
-                    <p>Mesaj içeriği 1</p>
-                    <p><small>2023-05-31 10:00:00</small></p>
+                    <h3>{{ message.title }}</h3>
+                    <p>{{ message.content }}</p>
+                    <p><small>{{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
                 </li>
-                <li>
-                    <h3>Mesaj 2</h3>
-                    <p>Mesaj içeriği 2</p>
-                    <p><small>2023-05-31 12:00:00</small></p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
 
-        <a href="/user/send_message?receiver_id=ADMIN_USER_ID_HERE" class="button">Admin'e Mesaj Gönder</a>
-        <form action="/logout" method="post">
+        <a href="{{ url_for('send_message', receiver_id='ADMIN_USER_ID_HERE') }}" class="button">Admin'e Mesaj Gönder</a>
+        <form action="{{ url_for('logout') }}" method="post">
             <button type="submit" class="logout-button">Çıkış Yap</button>
         </form>
     </div>

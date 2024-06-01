@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcement List</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='announcement_list_style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <h1>Announcement List</h1>
-    <ul>
-        {% for announcement in announcements %}
-            <li>
-                <h3>{{ announcement.title }}</h3>
-                <p>{{ announcement.content }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Announcements</h1>
+        <ul>
+            {% for announcement in announcements %}
+                <li>
+                    <div class="announcement-header">
+                        <h3>{{ announcement.title }}</h3>
+                        <a href="{{ url_for('update_announcement', announcement_id=announcement.id) }}" class="update-btn"><i class="fas fa-edit"></i> Update</a>
+                    </div>
+                    <p>{{ announcement.content }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
