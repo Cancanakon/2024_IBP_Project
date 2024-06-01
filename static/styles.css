@@ -1,21 +1,62 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background: url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
 }
 
 h1 {
-    text-align: center;
-    margin-top: 50px;
+    font-size: 48px;
     margin-bottom: 30px;
-    color: #333;
+}
+
+.slider {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    border-radius: 10px;
 }
 
 .buttons {
     display: flex;
     justify-content: center;
+    margin-bottom: 30px;
 }
 
 button {
@@ -49,4 +90,9 @@ button:active {
 
 button:focus {
     outline: none;
+}
+
+footer {
+    font-size: 14px;
+    color: #bbb;
 }

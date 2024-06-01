@@ -1,17 +1,57 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş Yap</title>
+    <title>MILITEK EĞİTİM PLATFORMU</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Giriş Yap</h1>
-    <div class="buttons">
-        <a href="{{ url_for('admin_login') }}"><button class="admin">Yönetici Girişi</button></a>
-        <a href="{{ url_for('user_login') }}"><button class="user">Kullanıcı Girişi</button></a>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>MILITEK EĞİTİM PLATFORMU</h1>
+        <div class="slider">
+            <div class="slides">
+                <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Slide 1">
+                <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Slide 2">
+                <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Slide 3">
+            </div>
+        </div>
+        <div class="buttons">
+            <a href="{{ url_for('admin_login') }}"><button class="admin">Yönetici Girişi</button></a>
+            <a href="{{ url_for('user_login') }}"><button class="user">Kullanıcı Girişi</button></a>
+        </div>
+        <footer>
+            <p>All rights reserved</p>
+        </footer>
     </div>
+    <script>
+                let currentIndex = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelector('.slides');
+            const totalSlides = slides.children.length;
+            if (index >= totalSlides) {
+                currentIndex = 0;
+            } else if (index < 0) {
+                currentIndex = totalSlides - 1;
+            } else {
+                currentIndex = index;
+            }
+            const offset = -currentIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+
+        setInterval(nextSlide, 3000);
+
+    </script>
 </body>
 </html>
